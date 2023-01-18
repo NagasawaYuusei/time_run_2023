@@ -1145,7 +1145,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerMoveSpeed: 12
+  _playerJumpPower: 10
   _playerInput: {fileID: 700726686}
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  _groundDetectionSize: {x: 0.5, y: 0.2, z: 0.5}
+  _groundDetectionCentor: {x: 0, y: -0.9, z: 0}
+  _isGizmo: 0
 --- !u!1 &1190142836
 GameObject:
   m_ObjectHideFlags: 0
@@ -1743,7 +1750,7 @@ GameObject:
   - component: {fileID: 1796740240}
   - component: {fileID: 1796740239}
   - component: {fileID: 1796740243}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LightCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
