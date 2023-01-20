@@ -18,25 +18,11 @@ public class PlayerMove : MonoBehaviour
 
     Rigidbody _rb;
 
-    Transform _transform;
-
     Vector2 _moveDir;
 
     bool _isJump;
 
-    [SerializeField]
-    LayerMask _groundLayer;
-
-    [SerializeField]
-    Vector3 _groundDetectionSize;
-
-    [SerializeField]
-    Vector3 _groundDetectionCentor;
-
-    Vector3 _playerCentor;
-
-    [SerializeField]
-    bool _isGizmo;
+    [SerializeField] PlayerState _state;
 
     #region イベント登録
     private void OnEnable()
@@ -59,7 +45,6 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        State();
         Jump();
     }
 
@@ -76,8 +61,6 @@ public class PlayerMove : MonoBehaviour
             Debug.LogWarning("Rbないよ～");
             _rb = gameObject.AddComponent<Rigidbody>();
         }
-
-        _transform = GetComponent<Transform>();
     }
 
     void Move()
@@ -87,41 +70,12 @@ public class PlayerMove : MonoBehaviour
         _rb.AddForce((dir.normalized * _playerMoveSpeed * _playerMultipleSpeed) + _rb.velocity.y * Vector3.up, ForceMode.Acceleration);
     }
 
-    //今度プレイヤーステート的なクラスを作るから引っ越します
-    void State()
-    {
-        _playerCentor = _transform.position + _groundDetectionCentor;
-    }
-
     void Jump()
     {
-        if(_isJump && IsGround())
+        if(_isJump && _state.IsGround())
         {
             _rb.AddForce(Vector3.up * _playerJumpPower);
             _isJump = false;
-        }
-    }
-
-    //今度プレイヤーステート的なクラスを作るから引っ越します
-    public bool IsGround()
-    {
-        Collider[] collision = Physics.OverlapBox(_playerCentor, _groundDetectionSize, Quaternion.identity, _groundLayer);
-        if (collision.Length != 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        if (_isGizmo)
-        {
-            Gizmos.DrawCube(_playerCentor, _groundDetectionSize);
         }
     }
 
