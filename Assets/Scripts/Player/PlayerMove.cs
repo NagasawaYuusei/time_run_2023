@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMove : MonoBehaviour
 {
+    #region 変数
     [Header("スピードの設定")]
     [SerializeField, Tooltip("プレイヤーの動くスピード")]
     float _playerMoveSpeed = 12f;
@@ -16,13 +17,19 @@ public class PlayerMove : MonoBehaviour
     [Tooltip("インプットシステムのコンポーネント"), SerializeField]
     PlayerInput _playerInput;
 
+    [Tooltip("Rigidbody")] 
     Rigidbody _rb;
 
-    Vector2 _moveDir;
+    [Tooltip("動きの方向")]
+    Vector3 _moveDir;
 
+    [Tooltip("ジャンプしたかどうか")]
     bool _isJump;
 
-    [SerializeField] PlayerState _state;
+    [SerializeField, Tooltip("プレイヤーのステータス")]
+    PlayerState _state;
+
+    #endregion
 
     #region イベント登録
     private void OnEnable()
@@ -67,6 +74,7 @@ public class PlayerMove : MonoBehaviour
     {
         Vector3 dir = Camera.main.transform.TransformDirection(_moveDir);
         dir.y = 0;
+        Debug.DrawRay(transform.position, dir.normalized * 10, Color.red);
         _rb.AddForce((dir.normalized * _playerMoveSpeed * _playerMultipleSpeed) + _rb.velocity.y * Vector3.up, ForceMode.Acceleration);
     }
 
@@ -84,7 +92,8 @@ public class PlayerMove : MonoBehaviour
         if (context.action.name != "Move")
             return;
 
-        _moveDir = context.ReadValue<Vector2>();
+        Vector2 dir = context.ReadValue<Vector2>();
+        _moveDir = new Vector3(dir.x, 0, dir.y);
     }
 
     void OnJump(InputAction.CallbackContext context)
