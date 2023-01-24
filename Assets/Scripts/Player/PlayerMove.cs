@@ -11,10 +11,17 @@ public class PlayerMove : MonoBehaviour
     [Tooltip("プレイヤースピードの乗数")]
     float _playerMultipleSpeed = 10f;
 
-    [SerializeField]
+    [Tooltip("プレイヤーの最大スピード"), SerializeField]
+    float _playerMaximizeSpeed = 100f;
+    
+
+    [SerializeField, Tooltip("プレイヤーのジャンプスピード")]
     float _playerJumpPower = 10f;
 
-    [Tooltip("インプットシステムのコンポーネント"), SerializeField]
+    [Tooltip("ジャンプスピードの乗数")]
+    float _playerMultipleJumpPower = 100f;
+
+    [SerializeField, Tooltip("インプットシステムのコンポーネント")]
     PlayerInput _playerInput;
 
     [Tooltip("Rigidbody")] 
@@ -82,7 +89,7 @@ public class PlayerMove : MonoBehaviour
     {
         if(_isJump && _state.IsGround())
         {
-            _rb.AddForce(Vector3.up * _playerJumpPower);
+            _rb.AddForce(Vector3.up * _playerJumpPower * _playerMultipleJumpPower);
             _isJump = false;
         }
     }

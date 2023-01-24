@@ -17,6 +17,10 @@ public class PlayerState : MonoBehaviour
     [SerializeField]
     bool _isGizmo;
 
+    Rigidbody _rb;
+
+    [SerializeField] float _groundDrag;
+    [SerializeField] float _airDrag;
 
     Transform _transform;
 
@@ -28,16 +32,31 @@ public class PlayerState : MonoBehaviour
     void Update()
     {
         State();
+        DragControl();
     }
 
     void Setup()
     {
+        _rb = GetComponent<Rigidbody>();
         _transform = GetComponent<Transform>();
     }
 
     void State()
     {
         _playerCentor = _transform.position + _groundDetectionCentor;
+        Debug.Log(_rb.velocity);
+    }
+
+    void DragControl()
+    {
+        if(IsGround())
+        {
+            _rb.drag = _groundDrag;
+        }
+        else
+        {
+            _rb.drag = _airDrag;
+        }
     }
 
     public bool IsGround()
