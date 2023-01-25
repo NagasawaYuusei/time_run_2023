@@ -35,7 +35,6 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField, Tooltip("プレイヤーのステータス")]
     PlayerState _state;
-
     #endregion
 
     #region イベント登録
@@ -87,7 +86,7 @@ public class PlayerMove : MonoBehaviour
 
     void Jump()
     {
-        if(_isJump && _state.IsGround())
+        if(_isJump && _state.IsGround() && !_state.IsWallRun)
         {
             _rb.AddForce(Vector3.up * _playerJumpPower * _playerMultipleJumpPower);
             _isJump = false;

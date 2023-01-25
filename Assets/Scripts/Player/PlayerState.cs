@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour
 {
+    public static PlayerState Instance;
 
     [SerializeField]
     LayerMask _groundLayer;
@@ -23,6 +24,20 @@ public class PlayerState : MonoBehaviour
     [SerializeField] float _airDrag;
 
     Transform _transform;
+    bool _isWallRun;
+
+    PlayerStatesEnum _playerStatesEnum;
+
+    public bool IsWallRun => _isWallRun;
+
+    void Awake()
+    {
+        if(Instance && Instance.gameObject)
+        {
+            Debug.Log("Instanceï°êîÇ†ÇÈÇÊÅ[");
+        }
+        Instance = this;
+    }
 
     void Start()
     {
@@ -44,12 +59,12 @@ public class PlayerState : MonoBehaviour
     void State()
     {
         _playerCentor = _transform.position + _groundDetectionCentor;
-        Debug.Log(_rb.velocity);
+        //Debug.Log(_rb.velocity);
     }
 
     void DragControl()
     {
-        if(IsGround())
+        if (IsGround())
         {
             _rb.drag = _groundDrag;
         }
@@ -57,6 +72,11 @@ public class PlayerState : MonoBehaviour
         {
             _rb.drag = _airDrag;
         }
+    }
+
+    void ChangeWallRunState(bool on)
+    {
+        _isWallRun = on;
     }
 
     public bool IsGround()
@@ -79,5 +99,14 @@ public class PlayerState : MonoBehaviour
         {
             Gizmos.DrawCube(_playerCentor, _groundDetectionSize);
         }
+    }
+
+    public enum PlayerStatesEnum
+    {
+        None,
+        Idle,
+        WallRun,
+        Fly,
+        Pause
     }
 }
