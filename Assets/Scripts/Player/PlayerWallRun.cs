@@ -8,7 +8,7 @@ public class PlayerWallRun : MonoBehaviour
     [SerializeField] float _wallRunRaySize;
     RaycastHit _hitWall;
     [SerializeField] LayerMask _wallLayer;
-    [SerializeField] PlayerState _playerState;
+    [SerializeField] PlayerStateController _playerState;
     Rigidbody _rb;
     [SerializeField] float _wallRunSpeed = 1;
 
@@ -33,6 +33,7 @@ public class PlayerWallRun : MonoBehaviour
             Debug.DrawRay(transform.position, v3 * 100, Color.red);
             _rb.AddForce(v3 * 10 * _wallRunSpeed, ForceMode.Acceleration);
             _rb.useGravity = false;
+            //_playerState.ChangeWallRunState(true);
         }
         else if (Physics.Raycast(transform.position, -_cameraTransform.right, out _hitWall, _wallRunRaySize, _wallLayer) && !_playerState.IsGround())
         {
@@ -43,10 +44,12 @@ public class PlayerWallRun : MonoBehaviour
             Debug.DrawRay(transform.position, v3 * 100, Color.red);
             _rb.AddForce(v3 * 10 * _wallRunSpeed, ForceMode.Acceleration);
             _rb.useGravity = false;
+            //_playerState.ChangeWallRunState(true);
         }
         else
         {
             _rb.useGravity = true;
+            //_playerState.ChangeWallRunState(false);
         }
     }
 }

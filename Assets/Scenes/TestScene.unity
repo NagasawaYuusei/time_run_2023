@@ -1211,7 +1211,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 995550151}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 9652a59306678f643baceb069e12f2d3, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
@@ -1299,10 +1299,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cameraTransform: {fileID: 1190142839}
-  _wallRunRaySize: 2
+  _wallRunRaySize: 0.8
   _wallLayer:
     serializedVersion: 2
     m_Bits: 64
+  _playerState: {fileID: 995550156}
+  _wallRunSpeed: 1
 --- !u!1 &1190142836
 GameObject:
   m_ObjectHideFlags: 0

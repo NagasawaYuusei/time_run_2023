@@ -1,8 +1,9 @@
 using UnityEngine;
+using System;
 
-public class PlayerState : MonoBehaviour
+public class PlayerStateController : MonoBehaviour
 {
-    public static PlayerState Instance;
+    public static PlayerStateController Instance;
 
     [SerializeField]
     LayerMask _groundLayer;
@@ -24,17 +25,24 @@ public class PlayerState : MonoBehaviour
     [SerializeField] float _airDrag;
 
     Transform _transform;
-    bool _isWallRun;
 
-    PlayerStatesEnum _playerStatesEnum;
+    static PlayerStates _playerStatesEnum = PlayerStates.None;
 
-    public bool IsWallRun => _isWallRun;
+    #region プロパティ
+    static public PlayerStates PlayerState => _playerStatesEnum;
+    #endregion
+
+    #region イベント
+    public event Action<PlayerStates> OnPlayerStateChangeDisable;
+    public event Action<PlayerStates> OnPlayerStateChangeEnable;
+    #endregion
+
 
     void Awake()
     {
         if(Instance && Instance.gameObject)
         {
-            Debug.Log("Instance複数あるよー");
+            Debug.LogWarning("Instance複数あるよー");
         }
         Instance = this;
     }
@@ -74,9 +82,33 @@ public class PlayerState : MonoBehaviour
         }
     }
 
-    void ChangeWallRunState(bool on)
+    public void ChangePlayerState(PlayerStates state)
     {
-        _isWallRun = on;
+        //switch(state)
+        //{
+        //    case PlayerStates.None:
+        //        break;
+        //    case PlayerStates.Idle:
+        //        break;
+        //    case PlayerStates.Fly:
+        //        break;
+        //    case PlayerStates.WallRun:
+        //        break;
+        //    case PlayerStates.Pause:
+        //        break;
+        //    default:
+        //        break;
+        //}
+
+        if (state == _playerStatesEnum)
+        {
+            Debug.LogWarning("State一緒だよー");
+            return;
+        }
+
+        OnPlayerStateChangeDisable?.Invoke(_playerStatesEnum);
+        _playerStatesEnum = state;
+        OnPlayerStateChangeEnable?.Invoke(_playerStatesEnum);
     }
 
     public bool IsGround()
@@ -101,7 +133,7 @@ public class PlayerState : MonoBehaviour
         }
     }
 
-    public enum PlayerStatesEnum
+    public enum PlayerStates
     {
         None,
         Idle,
