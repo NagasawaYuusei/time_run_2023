@@ -1,6 +1,7 @@
 using UnityEngine;
 //using Cinemachine;
 
+//ŽŽ—p
 public class CursorController : MonoBehaviour
 {
     [SerializeField] bool _isCursorMove;

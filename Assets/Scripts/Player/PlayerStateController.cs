@@ -3,33 +3,49 @@ using System;
 
 public class PlayerStateController : MonoBehaviour
 {
-    public static PlayerStateController Instance;
+    #region 変数
 
-    [SerializeField]
+    [Header("設置判定")]
+    [SerializeField, Tooltip("地面のレイヤー")]
     LayerMask _groundLayer;
 
-    [SerializeField]
+    [SerializeField, Tooltip("設置判定のサイズ")]
     Vector3 _groundDetectionSize;
 
-    [SerializeField]
+    [SerializeField, Tooltip("設置判定の中心")]
     Vector3 _groundDetectionCentor;
 
+    [Tooltip("移動時の設置判定の中心")]
     Vector3 _playerCentor;
 
-    [SerializeField]
+    [SerializeField, Tooltip("設置判定を可視化するかどうか")]
     bool _isGizmo;
 
-    Rigidbody _rb;
 
-    [SerializeField] float _groundDrag;
-    [SerializeField] float _airDrag;
+    [Tooltip("プレイヤーのRigidbody")]
+    static Rigidbody _rb;
 
+    [SerializeField, Tooltip("地面時の重力")]
+    float _groundDrag;
+
+    [SerializeField, Tooltip("空中時の重力")]
+    float _airDrag;
+
+    [Tooltip("プレイヤーのトランスフォーム")]
     Transform _transform;
 
+    [Tooltip("プレイヤーの状態")]
     static PlayerStates _playerStatesEnum = PlayerStates.None;
 
+    [Tooltip("スピードを可視化するかどうか")]
+    bool _isPlayerVelocityWatch;
+
+    #endregion
+
     #region プロパティ
+    public static PlayerStateController Instance;
     static public PlayerStates PlayerState => _playerStatesEnum;
+    static public Rigidbody PlayerRigidbody => _rb;
     #endregion
 
     #region イベント
@@ -37,9 +53,11 @@ public class PlayerStateController : MonoBehaviour
     public event Action<PlayerStates> OnPlayerStateChangeEnable;
     #endregion
 
+    #region Unityメソッド
 
     void Awake()
     {
+        //インスタンスの処理　シーンごとにインスタンス変えたいからおかしくなってる
         if(Instance && Instance.gameObject)
         {
             Debug.LogWarning("Instance複数あるよー");
@@ -55,19 +73,36 @@ public class PlayerStateController : MonoBehaviour
     void Update()
     {
         State();
+        VelocityWatch();
         DragControl();
     }
 
+    #endregion
+
+    #region メソッド
+
     void Setup()
     {
-        _rb = GetComponent<Rigidbody>();
+        //RequireComponent知ってるけどデバッグを出したいからこうする
+        if (!TryGetComponent(out _rb))
+        {
+            Debug.LogWarning("Rbないよ～");
+            _rb = gameObject.AddComponent<Rigidbody>();
+        }
         _transform = GetComponent<Transform>();
     }
 
     void State()
     {
         _playerCentor = _transform.position + _groundDetectionCentor;
-        //Debug.Log(_rb.velocity);
+    }
+
+    void VelocityWatch()
+    {
+        if(_isPlayerVelocityWatch)
+        {
+            Debug.Log(_rb.velocity);
+        }
     }
 
     void DragControl()
@@ -116,10 +151,15 @@ public class PlayerStateController : MonoBehaviour
         Collider[] collision = Physics.OverlapBox(_playerCentor, _groundDetectionSize, Quaternion.identity, _groundLayer);
         if (collision.Length != 0)
         {
+            if(_playerStatesEnum != PlayerStates.WallRun)
+            {
+                ChangePlayerState(PlayerStates.Fly);
+            }
             return true;
         }
         else
         {
+            ChangePlayerState(PlayerStates.Idle);
             return false;
         }
     }
@@ -141,4 +181,6 @@ public class PlayerStateController : MonoBehaviour
         Fly,
         Pause
     }
+
+    #endregion
 }

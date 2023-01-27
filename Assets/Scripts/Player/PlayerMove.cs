@@ -24,9 +24,6 @@ public class PlayerMove : MonoBehaviour
     [SerializeField, Tooltip("インプットシステムのコンポーネント")]
     PlayerInput _playerInput;
 
-    [Tooltip("Rigidbody")] 
-    Rigidbody _rb;
-
     [Tooltip("動きの方向")]
     Vector3 _moveDir;
 
@@ -68,12 +65,7 @@ public class PlayerMove : MonoBehaviour
 
     void SetUp()
     {
-        //RequireComponent知ってるけどデバッグを出したいからこうする
-        if (!TryGetComponent(out _rb))
-        {
-            Debug.LogWarning("Rbないよ～");
-            _rb = gameObject.AddComponent<Rigidbody>();
-        }
+
     }
 
     void Move()
@@ -81,14 +73,15 @@ public class PlayerMove : MonoBehaviour
         Vector3 dir = Camera.main.transform.TransformDirection(_moveDir);
         dir.y = 0;
         Debug.DrawRay(transform.position, dir.normalized * 10, Color.red);
-        _rb.AddForce((dir.normalized * _playerMoveSpeed * _playerMultipleSpeed) + _rb.velocity.y * Vector3.up, ForceMode.Acceleration);
+        PlayerStateController.PlayerRigidbody.AddForce((dir.normalized * _playerMoveSpeed * _playerMultipleSpeed)
+            + PlayerStateController.PlayerRigidbody.velocity.y * Vector3.up, ForceMode.Acceleration);
     }
 
     void Jump()
     {
         if(_isJump && _state.IsGround())
         {
-            _rb.AddForce(Vector3.up * _playerJumpPower * _playerMultipleJumpPower);
+            PlayerStateController.PlayerRigidbody.AddForce(Vector3.up * _playerJumpPower * _playerMultipleJumpPower);
             _isJump = false;
         }
     }
