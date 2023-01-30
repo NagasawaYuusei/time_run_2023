@@ -32,6 +32,10 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField, Tooltip("プレイヤーのステータス")]
     PlayerStateController _state;
+
+    [SerializeField]
+    PlayerSpeedController _speedController;
+
     #endregion
 
     #region イベント登録
@@ -48,11 +52,6 @@ public class PlayerMove : MonoBehaviour
     }
     #endregion
 
-    void Start()
-    {
-        SetUp();
-    }
-
     void Update()
     {
         Jump();
@@ -63,17 +62,11 @@ public class PlayerMove : MonoBehaviour
         Move();
     }
 
-    void SetUp()
-    {
-
-    }
-
     void Move()
     {
         Vector3 dir = Camera.main.transform.TransformDirection(_moveDir);
         dir.y = 0;
-        Debug.DrawRay(transform.position, dir.normalized * 10, Color.red);
-        PlayerStateController.PlayerRigidbody.AddForce((dir.normalized * _playerMoveSpeed * _playerMultipleSpeed)
+        PlayerStateController.PlayerRigidbody.AddForce((dir.normalized * _speedController.PlayerSpeed * _playerMultipleSpeed)
             + PlayerStateController.PlayerRigidbody.velocity.y * Vector3.up, ForceMode.Acceleration);
     }
 
@@ -88,7 +81,7 @@ public class PlayerMove : MonoBehaviour
 
     void OnMove(InputAction.CallbackContext context)
     {
-        if (context.action.name != "Move")
+        if (context.action.name != "Move" && PlayerStateController.PlayerState != PlayerStateController.PlayerStates.WallRun)
             return;
 
         Vector2 dir = context.ReadValue<Vector2>();
@@ -97,7 +90,7 @@ public class PlayerMove : MonoBehaviour
 
     void OnJump(InputAction.CallbackContext context)
     {
-        if (context.action.name != "Jump")
+        if (context.action.name != "Jump") 
             return;
 
         if (context.started)

@@ -20,6 +20,7 @@ public class PlayerWallRun : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, _cameraTransform.right, out _hitWall, _wallRunRaySize, _wallLayer) && !_playerState.IsGround())
         {
+            PlayerStateController.Instance.ChangePlayerState(PlayerStateController.PlayerStates.WallRun);
             Vector3 v0 = _hitWall.normal;
             Vector3 v1 = new Vector3(0, 90, 0);
             Vector3 v2 = new Vector3(v0.x, 0, v0.z).normalized;
@@ -27,10 +28,10 @@ public class PlayerWallRun : MonoBehaviour
             Debug.DrawRay(transform.position, v3 * 100, Color.red);
             PlayerStateController.PlayerRigidbody.AddForce(v3 * 10 * _wallRunSpeed, ForceMode.Acceleration);
             PlayerStateController.PlayerRigidbody.useGravity = false;
-            //_playerState.ChangeWallRunState(true);
         }
         else if (Physics.Raycast(transform.position, -_cameraTransform.right, out _hitWall, _wallRunRaySize, _wallLayer) && !_playerState.IsGround())
         {
+            PlayerStateController.Instance.ChangePlayerState(PlayerStateController.PlayerStates.WallRun);
             Vector3 v0 = _hitWall.normal;
             Vector3 v1 = new Vector3(0, 90, 0);
             Vector3 v2 = new Vector3(v0.x, 0, v0.z).normalized;
@@ -38,12 +39,11 @@ public class PlayerWallRun : MonoBehaviour
             Debug.DrawRay(transform.position, v3 * 100, Color.red);
             PlayerStateController.PlayerRigidbody.AddForce(v3 * 10 * _wallRunSpeed, ForceMode.Acceleration);
             PlayerStateController.PlayerRigidbody.useGravity = false;
-            //_playerState.ChangeWallRunState(true);
         }
         else
         {
+            PlayerStateController.Instance.ChangePlayerState(PlayerStateController.PlayerStates.Idle);
             PlayerStateController.PlayerRigidbody.useGravity = true;
-            //_playerState.ChangeWallRunState(false);
         }
     }
 }
